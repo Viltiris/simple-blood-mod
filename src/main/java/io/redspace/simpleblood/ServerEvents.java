@@ -41,22 +41,6 @@ public class ServerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void joinLevelEvent(EntityJoinLevelEvent event) {
-        if (event.getEntity().getType().equals(EntityType.EXPERIENCE_ORB)) {
-            event.setCanceled(true);
-        } else if (event.getEntity() instanceof Zombie zombie) {
-            if (event.getLevel().getBrightness(LightLayer.BLOCK, zombie.blockPosition()) > 0) {
-                event.setCanceled(true);
-            } else {
-                Arrays.stream(EquipmentSlot.values()).forEach(slot -> {
-                    zombie.setItemSlot(slot, ItemStack.EMPTY);
-                    zombie.setDropChance(slot, 0);
-                });
-            }
-        }
-    }
-
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
         level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
     }
