@@ -1,0 +1,10 @@
+{
+  "generic.draw_loop": {
+    "sounds": [
+      "simpleblood:bow_load_01",
+      "simpleblood:bow_load_02",
+      "simpleblood:bow_load_03",
+      "simpleblood:bow_load_04"
+    ]
+  }
+}
