@@ -37,7 +37,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.quadSize *= 4f + (float) Math.random() * 3;
+        this.quadSize = 1f + (float) Math.random() * 0.75f;
         this.lifetime = 200 + (int) (Math.random() * 200);
         this.gravity = 1.0F;
         this.pickSprite(spriteSet);
@@ -52,23 +52,23 @@ public class BloodGroundParticle extends TextureSheetParticle {
     public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         this.alpha = 1.0F - Mth.clamp(((float) this.age + partialTick - 90) / (float) this.lifetime, 0.2F, .7F);
 //backface
-//        this.renderRotatedParticle(buffer, camera, partialTick, (p_234005_) -> {
-//            p_234005_.mul(Axis.YP.rotation(0));
-//            p_234005_.mul(Axis.XP.rotation(-DEGREES_90));
+//        this.renderRotatedParticle(buffer, camera, partialTick, (quat) -> {
+//            quat.mul(Axis.YP.rotation(0));
+//            quat.mul(Axis.XP.rotation(-DEGREES_90));
 //        });
         //frontface (up)
         float quadSize = this.getQuadSize(partialTick);
-        if(this.age + partialTick <= SPLAT_IN_TIME){
+        if (this.age + partialTick <= SPLAT_IN_TIME) {
             quadSize *= (this.age + partialTick) / (SPLAT_IN_TIME * 2f) + .5f;
         }
-        float yrot = age + partialTick;
-        this.renderRotatedParticle(buffer, camera, partialTick, quadSize, (p_234000_) -> {
-            p_234000_.mul(Axis.YP.rotation(-(float) Math.PI + yrot * Mth.DEG_TO_RAD));
-            p_234000_.mul(Axis.XP.rotation(DEGREES_90));
+        this.renderRotatedParticle(buffer, camera, partialTick, quadSize, (quat) -> {
+            quat.mul(Axis.YP.rotation(-(float) Math.PI));
+            quat.mul(Axis.XP.rotation(DEGREES_90));
         });
     }
 
     private static final float SPLAT_IN_TIME = 1.5f;
+    private static final float MAX_PROJECTION_HEIGHT = 2.0f;
 
     private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, float quadSize, Consumer<Quaternionf> pQuaternion) {
         Vec3 cameraPos = camera.getPosition();
@@ -106,24 +106,153 @@ public class BloodGroundParticle extends TextureSheetParticle {
             );
         }
         int light = this.getLightColor(partialTick);
+        double centerX = Mth.lerp(partialTick, this.xo, this.x);
+        double centerY = Mth.lerp(partialTick, this.yo, this.y);
+        double centerZ = Mth.lerp(partialTick, this.zo, this.z);
+        int startY = Mth.floor(centerY + 1.0D);
+        int endY = Mth.floor(centerY - MAX_PROJECTION_HEIGHT);
 
-        for (BlockPos blockpos : BlockPos.betweenClosed(BlockPos.containing(worldExtentMin), BlockPos.containing(worldExtentMax))) {
-            level.addParticle(ParticleTypes.FLAME, blockpos.getX(), blockpos.getY(), blockpos.getZ(), 0, 0, 0);
-            level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, blockpos.getX() , blockpos.getY(), blockpos.getZ() + 1, 0, 0, 0);
-            level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, blockpos.getX() + 1, blockpos.getY(), blockpos.getZ(), 0, 0, 0);
-            level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, blockpos.getX() + 1, blockpos.getY(), blockpos.getZ() + 1, 0, 0, 0);
-            
+        int minBlockX = BlockPos.containing(worldExtentMin).getX();
+        int maxBlockX = BlockPos.containing(worldExtentMax).getX();
+        int minBlockZ = BlockPos.containing(worldExtentMin).getZ();
+        int maxBlockZ = BlockPos.containing(worldExtentMax).getZ();
+
+        for (int blockX = minBlockX; blockX <= maxBlockX; blockX++) {
+            for (int blockZ = minBlockZ; blockZ <= maxBlockZ; blockZ++) {
+                this.renderColumnDecal(pConsumer, camera, blockX, blockZ, startY, endY, centerX, centerY, centerZ, worldExtentMin, worldExtentMax, quadSize, light);
+            }
         }
-
-//        this.makeCornerVertex(pConsumer, avector3f[0], this.getU1(), this.getV1(), light);
-//        this.makeCornerVertex(pConsumer, avector3f[1], this.getU1(), this.getV0(), light);
-//        this.makeCornerVertex(pConsumer, avector3f[2], this.getU0(), this.getV0(), light);
-//        this.makeCornerVertex(pConsumer, avector3f[3], this.getU0(), this.getV1(), light);
     }
 
-    private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVertex, float pU, float pV, int pPackedLight) {
+    private void renderColumnDecal(
+            VertexConsumer buffer,
+            Camera camera,
+            int blockX,
+            int blockZ,
+            int startY,
+            int endY,
+            double centerX,
+            double centerY,
+            double centerZ,
+            Vec3 worldExtentMin,
+            Vec3 worldExtentMax,
+            float quadSize,
+            int light
+    ) {
+        BlockPos.MutableBlockPos columnPos = new BlockPos.MutableBlockPos();
+
+        for (int y = startY; y >= endY; y--) {
+            columnPos.set(blockX, y, blockZ);
+            BlockPos surfacePos = columnPos.below();
+            BlockState blockState = this.level.getBlockState(surfacePos);
+            if (blockState.getRenderShape() == RenderShape.INVISIBLE) {
+                continue;
+            }
+
+            VoxelShape shape = blockState.getCollisionShape(this.level, surfacePos);
+            if (shape.isEmpty()) {
+                continue;
+            }
+
+            AABB bounds = shape.bounds();
+            double surfaceTopY = surfacePos.getY() + bounds.maxY;
+            if (surfaceTopY > centerY + 0.25D) {
+                continue;
+            }
+            float drop = (float) (centerY - surfaceTopY);
+            float alphaMultiplier = Mth.lerp( Mth.clamp(drop / MAX_PROJECTION_HEIGHT, 0.0F, 1.0F), 1.0F, 0.25F);
+            if (this.renderBlockDecal(
+                    buffer,
+                    camera,
+                    surfacePos,
+                    bounds,
+                    (float) surfaceTopY,
+                    centerX,
+                    centerZ,
+                    worldExtentMin,
+                    worldExtentMax,
+                    quadSize,
+                    light,
+                    alphaMultiplier
+            )) {
+                return;
+            }
+        }
+    }
+
+    private boolean renderBlockDecal(
+            VertexConsumer buffer,
+            Camera camera,
+            BlockPos surfacePos,
+            AABB bounds,
+            float surfaceTopY,
+            double centerX,
+            double centerZ,
+            Vec3 worldExtentMin,
+            Vec3 worldExtentMax,
+            float quadSize,
+            int light,
+            float alphaMultiplier
+    ) {
+        float minX = surfacePos.getX() + (float) bounds.minX;
+        float maxX = surfacePos.getX() + (float) bounds.maxX;
+        float minZ = surfacePos.getZ() + (float) bounds.minZ;
+        float maxZ = surfacePos.getZ() + (float) bounds.maxZ;
+        float surfaceY = surfaceTopY + 0.005625F;
+
+        if (minX < worldExtentMin.x) {
+            minX = (float) worldExtentMin.x;
+        }
+        if (maxX > worldExtentMax.x) {
+            maxX = (float) worldExtentMax.x;
+        }
+        if (minZ < worldExtentMin.z) {
+            minZ = (float) worldExtentMin.z;
+        }
+        if (maxZ > worldExtentMax.z) {
+            maxZ = (float) worldExtentMax.z;
+        }
+        if (minX >= maxX || minZ >= maxZ) {
+            return false;
+        }
+
+        float u0 = this.getU0();
+        float u1 = this.getU1();
+        float v0 = this.getV0();
+        float v1 = this.getV1();
+        float halfSize = quadSize * 0.5F;
+        Vec3 cameraPos = camera.getPosition();
+        Vec2[] corners = new Vec2[]{
+                new Vec2(minX, minZ),
+                new Vec2(minX, maxZ),
+                new Vec2(maxX, maxZ),
+                new Vec2(maxX, minZ),
+        };
+
+        for (Vec2 corner : corners) {
+            float offsetX = corner.x - (float) centerX;
+            float offsetZ = corner.y - (float) centerZ;
+            float u = (offsetX / (2.0F * halfSize) + 0.5F) * (u1 - u0) + u0;
+            float v = (offsetZ / (2.0F * halfSize) + 0.5F) * (v1 - v0) + v0;
+            this.makeCornerVertex(
+                    buffer,
+                    new Vector3f(
+                            corner.x - (float) cameraPos.x,
+                            surfaceY - (float) cameraPos.y,
+                            corner.y - (float) cameraPos.z
+                    ),
+                    u,
+                    v,
+                    light,
+                    alphaMultiplier
+            );
+        }
+        return true;
+    }
+
+    private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVertex, float pU, float pV, int pPackedLight, float alphaMultiplier) {
         pConsumer.addVertex(pVertex.x(), pVertex.y(), pVertex.z())
-                .setColor(this.rCol, this.gCol, this.bCol, this.alpha)
+                .setColor(this.rCol, this.gCol, this.bCol, this.alpha * alphaMultiplier)
                 .setUv(pU, pV)
                 .setLight(pPackedLight);
     }
