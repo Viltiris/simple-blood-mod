@@ -20,4 +20,9 @@ public class ParticleRegistry {
     public static final Vector3f BLOOD_COLOR = new Vector3f(0.5f, 0f, 0.05f);
     public static final Supplier<SimpleParticleType> BLOOD_PARTICLE = PARTICLE_TYPES.register("blood", () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> BLOOD_GROUND_PARTICLE = PARTICLE_TYPES.register("blood_ground", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> BLOOD_SPAT_1 = PARTICLE_TYPES.register("blood_spat_1", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> BLOOD_SPAT_2 = PARTICLE_TYPES.register("blood_spat_2", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> BLOOD_SPURT_2 = PARTICLE_TYPES.register("blood_spurt_2", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> BLOOD_SWIPE_1 = PARTICLE_TYPES.register("blood_swipe_1", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> BLOOD_SWIPE_2 = PARTICLE_TYPES.register("blood_swipe_2", () -> new SimpleParticleType(false));
 }

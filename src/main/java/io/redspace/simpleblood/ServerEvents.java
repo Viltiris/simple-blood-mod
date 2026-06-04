@@ -2,6 +2,7 @@ package io.redspace.simpleblood;
 
 import io.redspace.simpleblood.registry.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -17,6 +18,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 @EventBusSubscriber
 public class ServerEvents {
@@ -29,9 +31,22 @@ public class ServerEvents {
             if (!level.isClientSide()) {
                 Vec3 vec = entity.getBoundingBox().getCenter();
                 float damage = event.getContainer().getNewDamage();
-                int count = (int) (damage / 3) + level.random.nextIntBetweenInclusive(0, 2);
+                float minDamage = 3f;
+                float highDamage = 12f;
+                if (damage <= minDamage) {
+                    return;
+                }
+                int count = (int) (damage / minDamage) + level.random.nextIntBetweenInclusive(0, (int) (2 * damage / highDamage));
                 float speed = 0.06f + count * .01f;
-                spawnParticles(level, ParticleRegistry.BLOOD_PARTICLE.get(), vec.x, vec.y + .5, vec.z, count, 0.05, 0.05, 0.05, speed, true);
+                for (int i = 0; i < count; i++) {
+                    var particles = new Supplier[]{ParticleRegistry.BLOOD_PARTICLE,
+                            ParticleRegistry.BLOOD_SPAT_1,
+                            ParticleRegistry.BLOOD_SPAT_2,
+                            ParticleRegistry.BLOOD_SPURT_2,
+                            ParticleRegistry.BLOOD_SWIPE_1,
+                            ParticleRegistry.BLOOD_SWIPE_2};
+                    spawnParticles(level, (ParticleOptions) particles[level.random.nextInt(particles.length)].get(), vec.x, vec.y + .5, vec.z, 1, 0.05, 0.05, 0.05, speed, true);
+                }
             }
         }
     }

@@ -10,13 +10,16 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import static net.minecraft.world.level.ClipContext.Block.*;
 import static net.minecraft.world.level.ClipContext.Fluid.NONE;
 
 public class BloodParticle extends TextureSheetParticle {
-
+    private final boolean mirrored;
     float scaleTransition;
+
     public BloodParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
 
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
@@ -35,6 +38,8 @@ public class BloodParticle extends TextureSheetParticle {
         this.bCol = ParticleRegistry.BLOOD_COLOR.z;
 
         this.scaleTransition = 1f + (float) Math.random();
+        this.mirrored = level.random.nextBoolean();
+
     }
 
 
@@ -52,6 +57,44 @@ public class BloodParticle extends TextureSheetParticle {
     public float getQuadSize(float partialTick) {
         float scaleMult = (this.age + partialTick) > scaleTransition ? 1f : (this.age + partialTick) / (scaleTransition * 2f) + .5f;
         return super.getQuadSize(partialTick) * scaleMult;
+    }
+
+    protected void renderRotatedQuad(VertexConsumer buffer, Quaternionf quaternion, float x, float y, float z, float partialTicks) {
+        float f = this.getQuadSize(partialTicks);
+        float f1 = this.getU0();
+        float f2 = this.getU1();
+        float f3 = this.getV0();
+        float f4 = this.getV1();
+        if (this.mirrored) {
+            float tmp = f1;
+            f1 = f2;
+            f2 = tmp;
+        }
+        int i = this.getLightColor(partialTicks);
+        this.renderVertex(buffer, quaternion, x, y, z, 1.0F, -1.0F, f, f2, f4, i);
+        this.renderVertex(buffer, quaternion, x, y, z, 1.0F, 1.0F, f, f2, f3, i);
+        this.renderVertex(buffer, quaternion, x, y, z, -1.0F, 1.0F, f, f1, f3, i);
+        this.renderVertex(buffer, quaternion, x, y, z, -1.0F, -1.0F, f, f1, f4, i);
+    }
+
+    private void renderVertex(
+            VertexConsumer buffer,
+            Quaternionf quaternion,
+            float x,
+            float y,
+            float z,
+            float xOffset,
+            float yOffset,
+            float quadSize,
+            float u,
+            float v,
+            int packedLight
+    ) {
+        Vector3f vector3f = new Vector3f(xOffset, yOffset, 0.0F).rotate(quaternion).mul(quadSize).add(x, y, z);
+        buffer.addVertex(vector3f.x(), vector3f.y(), vector3f.z())
+                .setUv(u, v)
+                .setColor(this.rCol, this.gCol, this.bCol, this.alpha)
+                .setLight(packedLight);
     }
 
     @Override
