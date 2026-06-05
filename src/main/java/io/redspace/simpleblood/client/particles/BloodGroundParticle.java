@@ -30,6 +30,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
     private static final Vector3f TRANSFORM_VECTOR = new Vector3f(-1.0F, -1.0F, 0.0F);
     private static final float DEGREES_90 = Mth.PI / 2f;
     private static final int FADEOUT_BUFFER = 20;
+    private static final float INITIAL_ALPHA = 0.7f;
     private final int fadeoutTime;
 
     public BloodGroundParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double scale, double yd, double zd) {
@@ -40,14 +41,15 @@ public class BloodGroundParticle extends TextureSheetParticle {
         this.yd = yd;
         this.zd = zd;
         this.quadSize = (1.5f + (float) Math.random() * 0.25f) * readScale(scale);
-        this.fadeoutTime = 100 + (int) (Math.random() * 50);
-        this.lifetime = 300 + fadeoutTime;
+        this.fadeoutTime = 150;
+        this.lifetime = 200 + fadeoutTime + (int) (Math.random() * 150);
         this.gravity = 1.0F;
         this.pickSprite(spriteSet);
 
         this.rCol = ParticleRegistry.BLOOD_COLOR.x;
         this.gCol = ParticleRegistry.BLOOD_COLOR.y;
         this.bCol = ParticleRegistry.BLOOD_COLOR.z;
+        this.alpha = INITIAL_ALPHA;
     }
 
     private static float readScale(double scale) {
@@ -63,8 +65,8 @@ public class BloodGroundParticle extends TextureSheetParticle {
             quadSize *= (f) / (SPLAT_IN_TIME * 2f) + .5f;
         }
         if (f > fadeThreshold) {
-            quadSize *= 1 - Math.max(f - fadeThreshold - 60, 0) / fadeoutTime;
-            this.alpha = 1.0F - Mth.clamp((f - fadeThreshold) / fadeoutTime, 0.2F, 1F);
+            quadSize *= (float) Mth.smoothstep(1.0 - Math.max(f - fadeThreshold - 60, 0) / fadeoutTime);
+            this.alpha = 1.0F - Mth.clamp((f - fadeThreshold) / fadeoutTime, 1f - INITIAL_ALPHA, 1F);
         }
         this.renderRotatedParticle(buffer, camera, partialTick, quadSize, (quat) -> {
             quat.mul(Axis.YP.rotation(-(float) Math.PI));
@@ -150,7 +152,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
             columnPos.set(blockX, y, blockZ);
             BlockPos surfacePos = columnPos.below();
             BlockState blockState = this.level.getBlockState(surfacePos);
-            if (blockState.getRenderShape() == RenderShape.INVISIBLE) {
+            if (blockState.getRenderShape() == RenderShape.INVISIBLE || blockState.getCollisionShape(this.level, surfacePos).isEmpty()) {
                 continue;
             }
 

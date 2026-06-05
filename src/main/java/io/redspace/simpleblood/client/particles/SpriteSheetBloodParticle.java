@@ -1,7 +1,7 @@
 package io.redspace.simpleblood.client.particles;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
+import io.redspace.simpleblood.decal_behavior.DecalDirection;
+import io.redspace.simpleblood.decal_behavior.DecalType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -24,11 +24,13 @@ public class SpriteSheetBloodParticle extends BloodParticle {
             SpriteSet spriteSet,
             int frameCount,
             int textureSize,
+            DecalType decalType,
+            DecalDirection decalDirection,
             double xd,
             double yd,
             double zd
     ) {
-        super(level, x, y, z, spriteSet, xd, yd, zd);
+        super(level, x, y, z, spriteSet, decalType, decalDirection, xd, yd, zd);
         this.frameCount = frameCount;
         this.setSprite(spriteSet.get(0, 1));
         this.quadSize *= textureSize / 16f;
@@ -57,11 +59,15 @@ public class SpriteSheetBloodParticle extends BloodParticle {
         private final SpriteSet sprites;
         private final int frameCount;
         private final int textureSize;
+        private final DecalType decalType;
+        private final DecalDirection decalDirection;
 
-        public Provider(SpriteSet sprites, int frameCount, int textureSize) {
+        public Provider(SpriteSet sprites, int frameCount, int textureSize, DecalType decalType, DecalDirection decalDirection) {
             this.sprites = sprites;
             this.frameCount = frameCount;
             this.textureSize = textureSize;
+            this.decalType = decalType;
+            this.decalDirection = decalDirection;
         }
 
         @Override
@@ -75,7 +81,9 @@ public class SpriteSheetBloodParticle extends BloodParticle {
                 double dy,
                 double dz
         ) {
-            return new SpriteSheetBloodParticle(level, x, y, z, this.sprites, this.frameCount, this.textureSize, dx, dy, dz);
+            return new SpriteSheetBloodParticle(
+                    level, x, y, z, this.sprites, this.frameCount, this.textureSize, this.decalType, this.decalDirection, dx, dy, dz
+            );
         }
     }
 }
