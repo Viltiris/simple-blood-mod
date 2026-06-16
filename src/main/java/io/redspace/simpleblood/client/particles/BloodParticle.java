@@ -77,7 +77,6 @@ public class BloodParticle extends TextureSheetParticle {
         return this.decalDirection;
     }
 
-
     @Override
     public void tick() {
         super.tick();
