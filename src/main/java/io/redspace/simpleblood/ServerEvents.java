@@ -1,22 +1,16 @@
 package io.redspace.simpleblood;
 
-import io.redspace.simpleblood.registry.ParticleRegistry;
+import io.redspace.simpleblood.client.particles.BloodParticleOptions;
+import io.redspace.simpleblood.data.BloodConfig;
+import io.redspace.simpleblood.registry.BloodRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.monster.Zombie;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-
-import java.util.Arrays;
 
 @EventBusSubscriber
 public class ServerEvents {
@@ -24,26 +18,45 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onFinalDamage(LivingDamageEvent.Pre event) {
         var entity = event.getEntity();
-        if (entity.getType().is(ModTags.BLEEDS)) {
-            var level = entity.level();
-            if (!level.isClientSide()) {
-                Vec3 vec = entity.getBoundingBox().getCenter();
-                float damage = event.getContainer().getNewDamage();
-                float minDamage = 3f;
-                float highDamage = 12f;
-                if (damage <= minDamage) {
-                    return;
-                }
-                if (damage == Float.MAX_VALUE) {
-                    // kill command
-                    return;
-                }
-                damage = Math.min(damage, 2000);
-                int count = (int) (damage / minDamage) + level.random.nextIntBetweenInclusive(0, (int) (2 * (damage - minDamage) / highDamage));
-                float speed = 0.09f + count * .005f;
-                double bbShove = Math.max(entity.getBbWidth() * 0.5 - 0.5, 0);
-                spawnParticles(level, ParticleRegistry.BLOOD_EMITTER.get(), vec.x, vec.y + entity.getBbHeight() * 0.5, vec.z, count, 0.05 + bbShove, 0.1, 0.05 + bbShove, speed, true);
+        var level = entity.level();
+        if (level.isClientSide()) {
+            return;
+        }
+
+        for (BloodConfig config : BloodRegistry.getAll()) {
+            if (!entity.getType().is(config.entityTag())) {
+                continue;
             }
+            AABB aabb = entity.isMultipartEntity() ? entity.getParts()[entity.getRandom().nextInt(entity.getParts().length)].getBoundingBox() : entity.getBoundingBox();
+            Vec3 vec = aabb.getCenter();
+            float damage = event.getContainer().getNewDamage();
+            if (damage <= config.minDamage()) {
+                return;
+            }
+            if (damage == Float.MAX_VALUE) {
+                // kill command
+                return;
+            }
+
+            damage = Math.min(damage, 2000);
+            int count = (int) (damage / config.minDamage())
+                    + level.random.nextIntBetweenInclusive(0, (int) (2 * (damage - config.minDamage()) / config.maxDamage()));
+            float speed = config.scaledBaseSpeed() + count * config.scaledSpeedPerParticle();
+            double bbShove = Math.max(aabb.getXsize() * 0.5 - 0.5, 0);
+            spawnParticles(
+                    level,
+                    new BloodParticleOptions(config.color()),
+                    vec.x,
+                    vec.y + aabb.getYsize() * 0.5,
+                    vec.z,
+                    count,
+                    0.05 + bbShove,
+                    0.1,
+                    0.05 + bbShove,
+                    speed,
+                    true
+            );
+            return;
         }
     }
 

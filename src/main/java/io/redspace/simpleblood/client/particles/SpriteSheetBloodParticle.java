@@ -2,6 +2,7 @@ package io.redspace.simpleblood.client.particles;
 
 import io.redspace.simpleblood.decal_behavior.DecalDirection;
 import io.redspace.simpleblood.decal_behavior.DecalType;
+import io.redspace.simpleblood.registry.ParticleRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -26,11 +27,12 @@ public class SpriteSheetBloodParticle extends BloodParticle {
             int textureSize,
             DecalType decalType,
             DecalDirection decalDirection,
+            int color,
             double xd,
             double yd,
             double zd
     ) {
-        super(level, x, y, z, spriteSet, decalType, decalDirection, xd, yd, zd);
+        super(level, x, y, z, spriteSet, decalType, decalDirection, color, xd, yd, zd);
         this.frameCount = frameCount;
         this.setSprite(spriteSet.get(0, 1));
         this.quadSize *= textureSize / 16f;
@@ -55,7 +57,7 @@ public class SpriteSheetBloodParticle extends BloodParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<SimpleParticleType>, BloodEmitterParticle.VariantFactory {
         private final SpriteSet sprites;
         private final int frameCount;
         private final int textureSize;
@@ -81,8 +83,17 @@ public class SpriteSheetBloodParticle extends BloodParticle {
                 double dy,
                 double dz
         ) {
+            return create(level, x, y, z, ParticleRegistry.DEFAULT_BLOOD_COLOR, dx, dy, dz);
+        }
+
+        @Override
+        public Particle create(BloodParticleOptions options, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
+            return create(level, x, y, z, options.color(), dx, dy, dz);
+        }
+
+        private Particle create(ClientLevel level, double x, double y, double z, int color, double dx, double dy, double dz) {
             return new SpriteSheetBloodParticle(
-                    level, x, y, z, this.sprites, this.frameCount, this.textureSize, this.decalType, this.decalDirection, dx, dy, dz
+                    level, x, y, z, this.sprites, this.frameCount, this.textureSize, this.decalType, this.decalDirection, color, dx, dy, dz
             );
         }
     }

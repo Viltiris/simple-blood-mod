@@ -24,6 +24,7 @@ import static net.minecraft.world.level.ClipContext.Fluid.NONE;
 public class BloodParticle extends TextureSheetParticle {
     private final DecalType decalType;
     private final DecalDirection decalDirection;
+    private final int color;
     float scaleTransition;
     private boolean mirrored;
     private boolean underwater;
@@ -36,6 +37,7 @@ public class BloodParticle extends TextureSheetParticle {
             SpriteSet spriteSet,
             DecalType decalType,
             DecalDirection decalDirection,
+            int color,
             double xd,
             double yd,
             double zd
@@ -45,6 +47,7 @@ public class BloodParticle extends TextureSheetParticle {
 
         this.decalType = decalType;
         this.decalDirection = decalDirection;
+        this.color = color;
         this.xd = xd;
         this.yd = yd * 1.5 + .15f;
         this.zd = zd;
@@ -54,9 +57,9 @@ public class BloodParticle extends TextureSheetParticle {
         this.gravity = 1.5F;
         this.pickSprite(spriteSet);
 
-        this.rCol = ParticleRegistry.BLOOD_COLOR.x;
-        this.gCol = ParticleRegistry.BLOOD_COLOR.y;
-        this.bCol = ParticleRegistry.BLOOD_COLOR.z;
+        this.rCol = BloodParticleOptions.red(color);
+        this.gCol = BloodParticleOptions.green(color);
+        this.bCol = BloodParticleOptions.blue(color);
 
         this.scaleTransition = 1f + (float) Math.random();
         this.mirrored = level.random.nextBoolean();
@@ -87,7 +90,7 @@ public class BloodParticle extends TextureSheetParticle {
             if (alpha > 0.5) {
                 // prevent low-life underwater particles from emitting ground particle
                 Vec3 groundLevel = level.clip(new ClipContext(this.getPos().add(0, 0.6, 0), this.getPos(), VISUAL, NONE, CollisionContext.empty())).getLocation();
-                this.level.addParticle(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), true, groundLevel.x, groundLevel.y, groundLevel.z, this.getQuadSize(0.0F), 0.0D, 0.0D);
+                this.level.addParticle(new BloodGroundParticleOptions(this.color), true, groundLevel.x, groundLevel.y, groundLevel.z, this.getQuadSize(0.0F), 0.0D, 0.0D);
             }
             this.remove();
         }
@@ -166,7 +169,7 @@ public class BloodParticle extends TextureSheetParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<SimpleParticleType>, BloodEmitterParticle.VariantFactory {
         private final SpriteSet sprites;
         private final DecalType decalType;
         private final DecalDirection decalDirection;
@@ -177,10 +180,20 @@ public class BloodParticle extends TextureSheetParticle {
             this.decalDirection = decalDirection;
         }
 
+        @Override
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
                                        double dx, double dy, double dz) {
-            return new BloodParticle(level, x, y, z, this.sprites, this.decalType, this.decalDirection, dx, dy, dz);
+            return create(level, x, y, z, ParticleRegistry.DEFAULT_BLOOD_COLOR, dx, dy, dz);
+        }
+
+        @Override
+        public Particle create(BloodParticleOptions options, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
+            return create(level, x, y, z, options.color(), dx, dy, dz);
+        }
+
+        private Particle create(ClientLevel level, double x, double y, double z, int color, double dx, double dy, double dz) {
+            return new BloodParticle(level, x, y, z, this.sprites, this.decalType, this.decalDirection, color, dx, dy, dz);
         }
     }
 }

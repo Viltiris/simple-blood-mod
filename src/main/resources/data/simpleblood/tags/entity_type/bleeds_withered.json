@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wither",
+    "minecraft:magma_cube",
+    "minecraft:squid",
+    "minecraft:glow_squid",
+    "minecraft:warden",
+    {
+      "required": false,
+      "id": "irons_spellbooks:dead_king"
+    }
+  ]
+}

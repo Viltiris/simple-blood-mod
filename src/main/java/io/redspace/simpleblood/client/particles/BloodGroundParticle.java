@@ -2,14 +2,11 @@ package io.redspace.simpleblood.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import io.redspace.simpleblood.registry.ParticleRegistry;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,7 +30,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
     private static final float INITIAL_ALPHA = 0.7f;
     private final int fadeoutTime;
 
-    public BloodGroundParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double scale, double yd, double zd) {
+    public BloodGroundParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, int color, double scale, double yd, double zd) {
 
         super(level, xCoord, yCoord, zCoord, 0.0D, yd, zd);
 
@@ -46,9 +43,9 @@ public class BloodGroundParticle extends TextureSheetParticle {
         this.gravity = 1.0F;
         this.pickSprite(spriteSet);
 
-        this.rCol = ParticleRegistry.BLOOD_COLOR.x;
-        this.gCol = ParticleRegistry.BLOOD_COLOR.y;
-        this.bCol = ParticleRegistry.BLOOD_COLOR.z;
+        this.rCol = BloodParticleOptions.red(color);
+        this.gCol = BloodParticleOptions.green(color);
+        this.bCol = BloodParticleOptions.blue(color);
         this.alpha = INITIAL_ALPHA;
     }
 
@@ -271,17 +268,18 @@ public class BloodGroundParticle extends TextureSheetParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<BloodGroundParticleOptions> {
         private final SpriteSet sprites;
 
         public Provider(SpriteSet spriteSet) {
             this.sprites = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
+        @Override
+        public Particle createParticle(BloodGroundParticleOptions options, ClientLevel level,
                                        double x, double y, double z,
                                        double dx, double dy, double dz) {
-            return new BloodGroundParticle(level, x, y, z, this.sprites, dx, dy, dz);
+            return new BloodGroundParticle(level, x, y, z, this.sprites, options.color(), dx, dy, dz);
         }
     }
 }

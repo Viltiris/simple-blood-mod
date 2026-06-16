@@ -5,9 +5,51 @@
     "minecraft:pillager",
     "minecraft:ravager",
     "minecraft:evoker",
+    "minecraft:illusioner",
     "minecraft:vindicator",
     "minecraft:zombie",
     "minecraft:husk",
-    "minecraft:player"
+    "minecraft:player",
+    "minecraft:drowned",
+    "minecraft:spider",
+    "minecraft:cave_spider",
+    "minecraft:elder_guardian",
+    "minecraft:guardian",
+    "minecraft:hoglin",
+    "minecraft:zoglin",
+    "minecraft:piglin",
+    "minecraft:piglin_brute",
+    "minecraft:zombified_piglin",
+    "minecraft:zombie_villager",
+    "minecraft:zombie_horse",
+    "minecraft:polar_bear",
+    {
+      "required": false,
+      "id": "irons_spellbooks:fire_boss"
+    },
+    {
+      "required": false,
+      "id": "irons_spellbooks:pyromancer"
+    },
+    {
+      "required": false,
+      "id": "irons_spellbooks:cryomancer"
+    },
+    {
+      "required": false,
+      "id": "irons_spellbooks:priest"
+    },
+    {
+      "required": false,
+      "id": "irons_spellbooks:archevoker"
+    },
+    {
+      "required": false,
+      "id": "irons_spellbooks:ice_spider"
+    },
+    {
+      "id": "guardvillagers:guard",
+      "required": false
+    }
   ]
 }
