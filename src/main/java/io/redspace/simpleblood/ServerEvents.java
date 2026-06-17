@@ -41,11 +41,12 @@ public class ServerEvents {
             damage = Math.min(damage, 2000);
             int count = (int) (damage / config.minDamage())
                     + level.random.nextIntBetweenInclusive(0, (int) (2 * (damage - config.minDamage()) / config.maxDamage()));
-            float speed = config.scaledBaseSpeed() + count * config.scaledSpeedPerParticle();
+            double speed = config.scaledBaseSpeed() + count * config.scaledSpeedPerParticle();
             double bbShove = Math.max(aabb.getXsize() * 0.5 - 0.5, 0);
+            double scale = (aabb.getXsize() + 2) / 3f;
             spawnParticles(
                     level,
-                    new BloodParticleOptions(config.color()),
+                    new BloodParticleOptions(config.color(), (float) scale, config.isGraphic()),
                     vec.x,
                     vec.y + aabb.getYsize() * 0.5,
                     vec.z,

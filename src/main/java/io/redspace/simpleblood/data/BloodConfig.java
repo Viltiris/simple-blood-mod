@@ -11,7 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import java.util.function.Function;
 
 public record BloodConfig(TagKey<EntityType<?>> entityTag, int color, float minDamage, float damageIntensityMultiplier,
-                          float baseSpeed, float speedPerParticle) {
+                          float baseSpeed, float speedPerParticle, boolean isGraphic) {
     private static final Codec<Integer> HEX_COLOR_CODEC = Codec.STRING.flatXmap(
             str -> {
                 String hex = str.startsWith("#") ? str.substring(1) : str;
@@ -46,7 +46,8 @@ public record BloodConfig(TagKey<EntityType<?>> entityTag, int color, float minD
                     Codec.FLOAT.optionalFieldOf("min_damage", 3.0f).forGetter(BloodConfig::minDamage),
                     Codec.FLOAT.optionalFieldOf("damage_intensity_multiplier", 1.0f / 12f).forGetter(BloodConfig::damageIntensityMultiplier),
                     Codec.FLOAT.optionalFieldOf("base_speed", 9.0f).forGetter(BloodConfig::baseSpeed),
-                    Codec.FLOAT.optionalFieldOf("speed_per_particle", 0.5f).forGetter(BloodConfig::speedPerParticle)
+                    Codec.FLOAT.optionalFieldOf("speed_per_particle", 0.5f).forGetter(BloodConfig::speedPerParticle),
+                    Codec.BOOL.optionalFieldOf("is_graphic", true).forGetter(BloodConfig::isGraphic)
             ).apply(instance, BloodConfig::new)
     );
 

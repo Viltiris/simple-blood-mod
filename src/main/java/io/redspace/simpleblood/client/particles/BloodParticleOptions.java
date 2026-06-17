@@ -18,7 +18,7 @@ public record BloodParticleOptions(int color, float scale, boolean isGraphic) im
     public static final MapCodec<BloodParticleOptions> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.INT.fieldOf("color").forGetter(BloodParticleOptions::color),
-                    Codec.FLOAT.optionalFieldOf("scale", 2.5f).forGetter(BloodParticleOptions::scale),
+                    Codec.FLOAT.optionalFieldOf("scale", 1f).forGetter(BloodParticleOptions::scale),
                     Codec.BOOL.optionalFieldOf("is_graphic", true).forGetter(BloodParticleOptions::isGraphic)
             ).apply(instance, BloodParticleOptions::new)
     );
