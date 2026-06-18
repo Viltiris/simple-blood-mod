@@ -90,7 +90,7 @@ public class BloodParticle extends TextureSheetParticle {
             if (alpha > 0.5) {
                 // prevent low-life underwater particles from emitting ground particle
                 Vec3 groundLevel = level.clip(new ClipContext(this.getPos().add(0, 0.6, 0), this.getPos(), VISUAL, NONE, CollisionContext.empty())).getLocation();
-                this.level.addParticle(new BloodGroundParticleOptions(this.color), true, groundLevel.x, groundLevel.y, groundLevel.z, this.getQuadSize(0.0F), 0.0D, 0.0D);
+                this.level.addParticle(new BloodGroundParticleOptions(this.color, this.getQuadSize(0.0F)), true, groundLevel.x, groundLevel.y, groundLevel.z, 0.0D, 0.0D, 0.0D);
             }
             this.remove();
         }

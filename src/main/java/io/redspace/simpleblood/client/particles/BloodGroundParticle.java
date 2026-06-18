@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -33,14 +34,14 @@ public class BloodGroundParticle extends TextureSheetParticle {
     private final int fadeoutTime;
     private final float yawRotation;
 
-    public BloodGroundParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, int color, double scale, double yd, double zd) {
+    public BloodGroundParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, int color, float scale, double xd, double yd, double zd) {
 
-        super(level, xCoord, yCoord, zCoord, 0.0D, yd, zd);
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
 
-        this.xd = 0.0D;
+        this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.quadSize = (1.5f /*+ (float) Math.random() * 0.25f*/) * (float) scale;
+        this.quadSize = 1.5f * scale;
         this.yawRotation = this.random.nextInt(4) * DEGREES_90;
         this.fadeoutTime = 150;
         this.lifetime = (int) ((200 + fadeoutTime + (Math.random() * 150)) * ClientConfig.GROUND_DECAL_DURATION_MULTIPLIER.get());
@@ -153,7 +154,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
                 continue;
             }
 
-            VoxelShape shape = blockState.getShape(this.level, surfacePos);
+            VoxelShape shape = blockState.getVisualShape(this.level, surfacePos, CollisionContext.empty());
             if (shape.isEmpty()) {
                 continue;
             }
@@ -283,7 +284,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
         public Particle createParticle(BloodGroundParticleOptions options, ClientLevel level,
                                        double x, double y, double z,
                                        double dx, double dy, double dz) {
-            return new BloodGroundParticle(level, x, y, z, this.sprites, options.color(), dx, dy, dz);
+            return new BloodGroundParticle(level, x, y, z, this.sprites, options.color(), options.scale(), dx, dy, dz);
         }
     }
 }
