@@ -35,6 +35,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
     private static final float INITIAL_ALPHA = 0.7f;
     private final int fadeoutTime;
     private final float yawRotation;
+    private final float zFightOffset;
 
     public BloodGroundParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, int color, float scale, double xd, double yd, double zd) {
 
@@ -54,6 +55,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
         this.gCol = BloodParticleOptions.green(color);
         this.bCol = BloodParticleOptions.blue(color);
         this.alpha = INITIAL_ALPHA;
+        this.zFightOffset = this.random.nextFloat();
     }
 
     @Override
@@ -243,6 +245,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
 
                 float drop = (float) (centerY - worldTopY);
                 float alphaMultiplier = Mth.lerp(Mth.clamp(drop / MAX_PROJECTION_HEIGHT, 0.0F, 1.0F), 1.0F, 0.25F);
+                float clipOffset = 0;//0.005625f; // now incorporated in anti-zfight offset
                 this.renderFlatDecalPlane(
                         buffer,
                         camera,
@@ -250,7 +253,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
                         planeMaxX,
                         planeMinZ,
                         planeMaxZ,
-                        (float) worldTopY + 0.005625F,
+                        (float) worldTopY + clipOffset,
                         centerX,
                         centerZ,
                         quadSize,
@@ -295,6 +298,8 @@ public class BloodGroundParticle extends TextureSheetParticle {
         for (Vec2 corner : corners) {
             float offsetX = corner.x - (float) centerX;
             float offsetZ = corner.y - (float) centerZ;
+
+            float zFightY = (zFightOffset + 0.08f) * Math.max(0.05f, alpha - 0.3f) * 0.05f;
             float uvLocalX = offsetX * cosYaw - offsetZ * sinYaw;
             float uvLocalZ = offsetX * sinYaw + offsetZ * cosYaw;
             float u = (uvLocalX / (2.0F * halfSize) + 0.5F) * (u1 - u0) + u0;
@@ -303,7 +308,7 @@ public class BloodGroundParticle extends TextureSheetParticle {
                     buffer,
                     new Vector3f(
                             corner.x - (float) cameraPos.x,
-                            surfaceY - (float) cameraPos.y,
+                            surfaceY - (float) cameraPos.y + zFightY,
                             corner.y - (float) cameraPos.z
                     ),
                     u,
