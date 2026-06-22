@@ -38,6 +38,10 @@
     {
       "required": false,
       "id": "#simpleblood:compat/aether_bleeds"
+    },
+    {
+      "required": false,
+      "id": "#simpleblood:compat/born_in_chaos_bleeds"
     }
   ]
 }
