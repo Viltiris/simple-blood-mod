@@ -1,47 +1,49 @@
 {
   "replace": false,
   "values": [
-    "minecraft:witch",
-    "minecraft:pillager",
-    "minecraft:ravager",
-    "minecraft:evoker",
-    "minecraft:illusioner",
-    "minecraft:vindicator",
-    "minecraft:zombie",
-    "minecraft:husk",
-    "minecraft:player",
-    "minecraft:drowned",
-    "minecraft:spider",
-    "minecraft:cave_spider",
-    "minecraft:elder_guardian",
-    "minecraft:guardian",
-    "minecraft:hoglin",
-    "minecraft:zoglin",
-    "minecraft:piglin",
-    "minecraft:piglin_brute",
-    "minecraft:zombified_piglin",
-    "minecraft:zombie_villager",
-    "minecraft:zombie_horse",
-    "minecraft:polar_bear",
     {
       "required": false,
-      "id": "#simpleblood:compat/irons_spellbooks_bleeds"
+      "id": "#project_evershade:compat/mutantmonsters_bleeds"
     },
     {
       "required": false,
-      "id": "#simpleblood:compat/guardvillagers_bleeds"
+      "id": "#project_evershade:compat/takesapillage_bleeds"
     },
     {
       "required": false,
-      "id": "#simpleblood:compat/iceandfire_bleeds"
+      "id": "#project_evershade:compat/skybornpiglins_bleeds"
     },
     {
       "required": false,
-      "id": "#simpleblood:compat/aether_bleeds"
+      "id": "#project_evershade:compat/illagerinvasion_bleeds"
     },
     {
       "required": false,
-      "id": "#simpleblood:compat/born_in_chaos_bleeds"
+      "id": "#project_evershade:compat/valarian_conquest_bleeds"
+    },
+    {
+      "required": false,
+      "id": "#project_evershade:compat/betternether_bleeds"
+    },
+    {
+      "required": false,
+      "id": "#project_evershade:compat/createnuclear_bleeds"
+    },
+    {
+      "required": false,
+      "id": "#project_evershade:compat/naturalist_bleeds"
+    },
+    {
+      "required": false,
+      "id": "#project_evershade:compat/benssharks_bleeds"
+    },
+    {
+      "required": false,
+      "id": "#project_evershade:compat/deeperdarker_bleeds"
+    },
+    {
+      "required": false,
+      "id": "#project_evershade:compat/letsdo_bleeds"
     }
   ]
 }
