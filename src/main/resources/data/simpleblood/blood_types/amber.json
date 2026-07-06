@@ -1,5 +1,5 @@
 {
-  "entity_tag": "#project_evershade:bleeds_amber",
+  "entity_tag": "#simpleblood:bleeds_amber",
   "color": "#C68C00",
   "min_damage": 2.0,
   "damage_intensity_multiplier": 0.083,
