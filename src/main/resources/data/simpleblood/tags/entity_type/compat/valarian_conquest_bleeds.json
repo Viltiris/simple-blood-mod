@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "valarian_conquest:archer",
+    "valarian_conquest:female_citizen",
+    "valarian_conquest:male_citizen",
+    "valarian_conquest:soldier",
+    "valarian_conquest:troll"
+  ]
+}
