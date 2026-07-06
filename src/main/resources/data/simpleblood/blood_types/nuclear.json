@@ -1,5 +1,5 @@
 {
-  "entity_tag": "#project_evershade:bleeds_nuclear",
+  "entity_tag": "#simpleblood:bleeds_nuclear",
   "color": "#39FF14",
   "min_damage": 2.0,
   "damage_intensity_multiplier": 0.1,
