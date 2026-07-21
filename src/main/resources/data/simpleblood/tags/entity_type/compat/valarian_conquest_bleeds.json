@@ -1,10 +1,25 @@
 {
   "replace": false,
   "values": [
-    "valarian_conquest:archer",
-    "valarian_conquest:female_citizen",
-    "valarian_conquest:male_citizen",
-    "valarian_conquest:soldier",
-    "valarian_conquest:troll"
+    {
+      "required": false,
+      "id": "valarian_conquest:archer"
+    },
+    {
+      "required": false,
+      "id": "valarian_conquest:female_citizen"
+    },
+    {
+      "required": false,
+      "id": "valarian_conquest:male_citizen"
+    },
+    {
+      "required": false,
+      "id": "valarian_conquest:soldier"
+    },
+    {
+      "required": false,
+      "id": "valarian_conquest:troll"
+    }
   ]
 }

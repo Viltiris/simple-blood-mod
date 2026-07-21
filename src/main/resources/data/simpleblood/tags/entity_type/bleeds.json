@@ -1,49 +1,60 @@
 {
   "replace": false,
   "values": [
+    "minecraft:witch",
+    "minecraft:pillager",
+    "minecraft:ravager",
+    "minecraft:evoker",
+    "minecraft:illusioner",
+    "minecraft:vindicator",
+    "minecraft:villager",
+    "minecraft:zombie",
+    "minecraft:husk",
+    "minecraft:player",
+    "minecraft:drowned",
+    "minecraft:spider",
+    "minecraft:cave_spider",
+    "minecraft:elder_guardian",
+    "minecraft:guardian",
+    "minecraft:hoglin",
+    "minecraft:zoglin",
+    "minecraft:piglin",
+    "minecraft:piglin_brute",
+    "minecraft:zombified_piglin",
+    "minecraft:zombie_villager",
+    "minecraft:zombie_horse",
+    "minecraft:polar_bear",
     {
       "required": false,
-      "id": "#project_evershade:compat/mutantmonsters_bleeds"
+      "id": "#simpleblood:compat/mutantmonsters_bleeds"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/takesapillage_bleeds"
+      "id": "#simpleblood:compat/takesapillage_bleeds"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/skybornpiglins_bleeds"
+      "id": "#simpleblood:compat/illagerinvasion_bleeds"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/illagerinvasion_bleeds"
+      "id": "#simpleblood:compat/valarian_conquest_bleeds"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/valarian_conquest_bleeds"
+      "id": "#simpleblood:compat/betternether_bleeds"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/betternether_bleeds"
+      "id": "#simpleblood:compat/naturalist_bleeds"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/createnuclear_bleeds"
+      "id": "#simpleblood:compat/benssharks_bleeds"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/naturalist_bleeds"
-    },
-    {
-      "required": false,
-      "id": "#project_evershade:compat/benssharks_bleeds"
-    },
-    {
-      "required": false,
-      "id": "#project_evershade:compat/deeperdarker_bleeds"
-    },
-    {
-      "required": false,
-      "id": "#project_evershade:compat/letsdo_bleeds"
+      "id": "#simpleblood:compat/letsdo_bleeds"
     }
   ]
 }

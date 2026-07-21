@@ -1,13 +1,16 @@
 {
   "replace": false,
   "values": [
+    "minecraft:enderman",
+    "minecraft:ender_dragon",
+    "minecraft:endermite",
     {
       "required": false,
-      "id": "#project_evershade:compat/mutantmonsters_ender"
+      "id": "#simpleblood:compat/mutantmonsters_ender"
     },
     {
       "required": false,
-      "id": "#project_evershade:compat/betterend_bleeds_ender"
+      "id": "#simpleblood:compat/betterend_bleeds_ender"
     }
   ]
 }

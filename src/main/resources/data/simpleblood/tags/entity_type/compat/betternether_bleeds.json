@@ -1,9 +1,13 @@
 {
   "replace": false,
   "values": [
-    "betternether:flying_pig",
-    "betternether:jungle_skeleton",
-    "betternether:naga",
-    "betternether:skull"
+    {
+      "required": false,
+      "id": "betternether:flying_pig"
+    },
+    {
+      "required": false,
+      "id": "betternether:naga"
+    }
   ]
 }

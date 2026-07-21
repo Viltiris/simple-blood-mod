@@ -3,7 +3,7 @@
   "values": [
     {
       "required": false,
-      "id": "#simpleblood:compat/brewery_bleeds"
+      "id": "brewery:beer_elemental"
     }
   ]
 }

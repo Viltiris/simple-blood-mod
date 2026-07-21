@@ -1,8 +1,9 @@
 {
   "replace": false,
   "values": [
-    "createnuclear:irradiated_cat",
-    "createnuclear:irradiated_chicken",
-    "createnuclear:irradiated_wolf"
+    {
+      "required": false,
+      "id": "#simpleblood:compat/createnuclear_bleeds"
+    }
   ]
 }

@@ -1,7 +1,13 @@
 {
   "replace": false,
   "values": [
-    "vinery:mule",
-    "vinery:wandering_winemaker"
+    {
+      "required": false,
+      "id": "vinery:mule"
+    },
+    {
+      "required": false,
+      "id": "vinery:wandering_winemaker"
+    }
   ]
 }

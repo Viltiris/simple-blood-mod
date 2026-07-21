@@ -1,17 +1,45 @@
 {
   "replace": false,
   "values": [
-    "illagerinvasion:alchemist",
-    "illagerinvasion:archivist",
-    "illagerinvasion:basher",
-    "illagerinvasion:firecaller",
-    "illagerinvasion:hatchet",
-    "illagerinvasion:inquisitor",
-    "illagerinvasion:invoker",
-    "illagerinvasion:marauder",
-    "illagerinvasion:necromancer",
-    "illagerinvasion:provoker",
-    "illagerinvasion:sorcerer",
-    "illagerinvasion:surrendered"
+    {
+      "required": false,
+      "id": "illagerinvasion:alchemist"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:archivist"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:basher"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:firecaller"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:inquisitor"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:invoker"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:marauder"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:necromancer"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:provoker"
+    },
+    {
+      "required": false,
+      "id": "illagerinvasion:sorcerer"
+    }
   ]
 }

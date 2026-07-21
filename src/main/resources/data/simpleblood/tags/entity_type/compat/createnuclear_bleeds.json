@@ -3,15 +3,15 @@
   "values": [
     {
       "required": false,
-      "id": "mutantmonsters:mutant_zombie"
+      "id": "createnuclear:irradiated_cat"
     },
     {
       "required": false,
-      "id": "mutantmonsters:spider_pig"
+      "id": "createnuclear:irradiated_chicken"
     },
     {
       "required": false,
-      "id": "mutantmonsters:mutant_creeper"
+      "id": "createnuclear:irradiated_wolf"
     }
   ]
 }
